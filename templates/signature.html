@@ -1,0 +1,48 @@
+{% set active_page = "signature" %}
+{% extends "base.html" %}
+{% block title %}Signature Verification · AuthentiScan{% endblock %}
+{% block content %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">Experimental comparison</p>
+        <h1>Signature Verification</h1>
+        <p>Compare a questioned signature crop with a known reference image.</p>
+    </div><a class="outline-button" href="{{ url_for('activity') }}">Activity Log</a>
+</header>
+{% if error %}<div class="alert error"><span>!</span><span>{{ error }}</span></div>{% endif %}
+<section class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">✎</span>
+            <h2>Upload Signature Pair</h2>
+        </div><span class="status-pill neutral">PNG · JPG · JPEG</span>
+    </div>
+    <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data" data-loading-form>
+            <div class="signature-grid"><label class="file-drop mini-drop" for="questioned_signature"><input type="file"
+                        id="questioned_signature" name="questioned_signature" accept=".png,.jpg,.jpeg"
+                        data-file-input="questionedName" required><span class="drop-copy"><span
+                            class="upload-cloud">?</span><strong>Questioned signature</strong><span>Upload the signature
+                            to inspect</span><span class="file-name" id="questionedName">No file
+                            selected</span></span></label><label class="file-drop mini-drop"
+                    for="reference_signature"><input type="file" id="reference_signature" name="reference_signature"
+                        accept=".png,.jpg,.jpeg" data-file-input="referenceName" required><span class="drop-copy"><span
+                            class="upload-cloud">✓</span><strong>Genuine reference</strong><span>Upload a known
+                            reference signature</span><span class="file-name" id="referenceName">No file
+                            selected</span></span></label></div>
+            <div class="form-actions"><button class="gradient-button" type="submit">✎ Compare Signatures</button><a
+                    class="secondary-button" href="{{ url_for('home') }}">Document Verification</a></div>
+        </form>
+    </div>
+</section>
+{% if result %}<section class="panel integrity-panel">
+    <div class="signature-score">{{ result.similarity_score }}%</div>
+    <h2>{{ result.status }}</h2>
+    <p class="integrity-message">{{ result.message }}</p>
+    <div class="document-meta">
+        <p><strong>Shape correlation:</strong> {{ result.pixel_score }}%</p>
+        <p><strong>Feature similarity:</strong> {{ result.feature_score }}%</p>
+    </div>
+</section>{% endif %}
+<p class="notice-note">Signature comparison is an experimental visual-similarity estimate. It is not biometric or legal
+    verification.</p>
+{% endblock %}

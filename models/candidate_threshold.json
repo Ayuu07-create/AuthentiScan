@@ -1,0 +1,20 @@
+{
+  "selected_threshold": 0.19,
+  "selection_method": "Maximum balanced accuracy on the validation split",
+  "validation": {
+    "threshold": 0.19,
+    "accuracy": 0.875,
+    "balanced_accuracy": 0.8642857142857143,
+    "macro_f1": 0.8426233720351368,
+    "genuine_recall": 0.8428571428571429,
+    "forged_recall": 0.8857142857142857
+  },
+  "test": {
+    "threshold": 0.19,
+    "accuracy": 0.8125,
+    "balanced_accuracy": 0.8194444444444444,
+    "macro_f1": 0.7776634071024189,
+    "genuine_recall": 0.8333333333333334,
+    "forged_recall": 0.8055555555555556
+  }
+}

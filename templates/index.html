@@ -1,0 +1,96 @@
+{% set active_page = "upload" %}
+{% extends "base.html" %}
+{% block title %}Upload Document · AuthentiScan{% endblock %}
+{% block content %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">AI document verification</p>
+        <h1>Upload Document</h1>
+        <p>Select the expected category and submit a document for OCR, quality and forgery analysis.</p>
+    </div><a class="outline-button" href="{{ url_for('history') }}">▥ View history</a>
+</header>
+{% if error %}<div class="alert error"><span>!</span><span>{{ error }}</span></div>{% endif %}
+<section class="upload-layout">
+    <article class="panel upload-card">
+        <div class="panel-header">
+            <div class="panel-title"><span class="title-icon">⇧</span>
+                <h2>New verification</h2>
+            </div><span class="status-pill neutral">PNG · JPG · JPEG · PDF</span>
+        </div>
+        <div class="panel-body">
+            <form method="POST" enctype="multipart/form-data" data-loading-form>
+                <div class="field-group"><label for="document_type">Document category <span
+                            class="required">*</span></label><select id="document_type" name="document_type" required>
+                        <option value="">Choose one of ten supported categories</option>
+                        <option value="pan_card">PAN Card</option>
+                        <option value="aadhaar_card">Aadhaar Card</option>
+                        <option value="marksheet">Marksheet</option>
+                        <option value="educational_certificate">Educational Certificate</option>
+                        <option value="college_id">College ID</option>
+                        <option value="birth_certificate">Birth Certificate</option>
+                        <option value="income_certificate">Income Certificate</option>
+                        <option value="experience_certificate">Experience Certificate</option>
+                        <option value="medical_certificate">Medical Certificate</option>
+                        <option value="domicile_certificate">Domicile Certificate</option>
+                    </select></div>
+                <label class="file-drop" for="document"><input type="file" id="document" name="document"
+                        accept=".png,.jpg,.jpeg,.pdf" data-file-input="documentFileName" required><span
+                        class="drop-copy"><span class="upload-cloud">⬆</span><strong>Drop a document here or
+                            browse</strong><span>Maximum file size: 25 MB</span><span class="file-name"
+                            id="documentFileName">No file selected</span></span></label>
+                <div class="form-actions"><button class="gradient-button" type="submit">✓ Verify Document</button><a
+                        class="secondary-button" href="{{ url_for('dashboard') }}">Dashboard</a></div>
+            </form>
+        </div>
+    </article>
+    <aside>
+        <article class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><span class="title-icon">✓</span>
+                    <h2>How verification works</h2>
+                </div>
+            </div>
+            <div class="panel-body">
+                <ul class="info-list">
+                    <li><span class="info-check">1</span><span><strong>Category verification</strong><br>OCR confirms
+                            that the file matches the category you selected.</span></li>
+                    <li><span class="info-check">2</span><span><strong>Quality assessment</strong><br>Resolution and
+                            sharpness are checked before analysis.</span></li>
+                    <li><span class="info-check">3</span><span><strong>Forensic analysis</strong><br>Image indicators
+                            and the trained ML model produce a risk estimate.</span></li>
+                    <li><span class="info-check">4</span><span><strong>Review and report</strong><br>Inspect signals,
+                            heatmap and downloadable PDF findings.</span></li>
+                </ul>
+                <div class="privacy-card"><strong>Privacy reminder</strong><br>Use redacted or authorized documents.
+                    This AI-assisted result is not legal proof of authenticity.</div>
+            </div>
+        </article>
+    </aside>
+</section>
+<section class="hero-banner">
+    <div class="hero-document"></div>
+    <div class="hero-copy">
+        <h2>Ensure document authenticity with AI</h2>
+        <p>AuthentiScan combines OCR-based category verification, image-forensic indicators and a mixed
+            real-and-synthetic classification model.</p>
+    </div>
+</section>
+{% endblock %}
+{% block public_content %}
+<section class="landing-layout">
+    <div class="auth-story">
+        <p class="eyebrow">AI-assisted visual forensics</p>
+        <h1>Make document checks <span>clearer, faster and traceable.</span></h1>
+        <p>AuthentiScan verifies supported document categories, analyzes manipulation indicators and generates
+            review-ready reports.</p>{% if error %}<div class="alert error"><span>!</span><span>{{ error }}</span></div>
+        {% endif %}<div class="feature-chips"><span class="feature-chip">OCR verification</span><span
+                class="feature-chip">ML risk scoring</span><span class="feature-chip">Suspicious-region heatmaps</span>
+        </div>
+        <div class="form-actions"><a class="gradient-button" href="{{ url_for('login') }}">Login to verify</a><a
+                class="outline-button" href="{{ url_for('register') }}">Create account</a></div>
+    </div>
+    <div class="landing-visual" aria-hidden="true">
+        <div class="visual-card"></div>
+    </div>
+</section>
+{% endblock %}

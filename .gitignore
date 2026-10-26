@@ -1,0 +1,19 @@
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.env
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+uploads/*
+instance/
+
+# Keep the active model; exclude experimental model backups
+models/*_before_mixed_candidate.keras
+models/*_mixed_candidate.keras
+models/*_mixed_failed.keras
+models/*_old.keras
+models/*_synthetic_only.keras

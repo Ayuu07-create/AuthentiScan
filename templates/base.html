@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09072b">
+    <title>{% block title %}AuthentiScan{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    {% if session.get("user_id") and not force_public|default(false) %}
+    <div class="app-shell">
+        <aside class="sidebar" id="appSidebar" aria-label="Primary navigation">
+            <a class="brand sidebar-brand" href="{{ url_for('dashboard') }}">
+                <span class="brand-shield" aria-hidden="true"><span>✓</span></span>
+                <span class="brand-copy">
+                    <strong>Authenti<span>Scan</span></strong>
+                    <small>AI Document Verification</small>
+                </span>
+            </a>
+
+            <nav class="side-nav">
+                <a class="nav-item {% if active_page == 'dashboard' %}active{% endif %}"
+                    href="{{ url_for('dashboard') }}">
+                    <span class="nav-icon">⌂</span><span>Dashboard</span>
+                </a>
+                <a class="nav-item {% if active_page == 'upload' %}active{% endif %}" href="{{ url_for('home') }}">
+                    <span class="nav-icon">⇧</span><span>Upload Document</span>
+                </a>
+                <a class="nav-item {% if active_page == 'history' %}active{% endif %}" href="{{ url_for('history') }}">
+                    <span class="nav-icon">▥</span><span>Analysis History</span>
+                </a>
+                <a class="nav-item {% if active_page == 'activity' %}active{% endif %}"
+                    href="{{ url_for('activity') }}">
+                    <span class="nav-icon">◷</span><span>Activity Logs</span>
+                </a>
+                <a class="nav-item {% if active_page == 'signature' %}active{% endif %}"
+                    href="{{ url_for('signature_verification') }}">
+                    <span class="nav-icon">✎</span><span>Signature Verification</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-art" aria-hidden="true">
+                <div class="art-document"><span></span><span></span><span></span></div>
+                <div class="art-shield">✓</div>
+                <div class="art-lens"></div>
+            </div>
+
+            <a class="nav-item logout-link" href="{{ url_for('logout') }}">
+                <span class="nav-icon">↪</span><span>Logout</span>
+            </a>
+        </aside>
+
+        <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+        <section class="workspace">
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle navigation"
+                    aria-controls="appSidebar" aria-expanded="false">☰</button>
+                <a class="brand mobile-brand" href="{{ url_for('dashboard') }}">
+                    <span class="brand-shield"><span>✓</span></span>
+                    <span class="brand-copy"><strong>Authenti<span>Scan</span></strong></span>
+                </a>
+                <div class="topbar-glow" aria-hidden="true"></div>
+                <div class="user-menu">
+                    <span class="user-avatar">{{ (session.get("user_name") or "U")[0] | upper }}</span>
+                    <span class="user-copy">
+                        <small>Welcome,</small>
+                        <strong>{{ session.get("user_name") }}</strong>
+                    </span>
+                    <a class="top-logout" href="{{ url_for('logout') }}">↪ <span>Logout</span></a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                {% block content %}{% endblock %}
+            </main>
+        </section>
+    </div>
+    {% else %}
+    <div class="public-shell">
+        <header class="public-header">
+            <a class="brand" href="{{ url_for('home') }}">
+                <span class="brand-shield"><span>✓</span></span>
+                <span class="brand-copy">
+                    <strong>Authenti<span>Scan</span></strong>
+                    <small>AI Document Verification System</small>
+                </span>
+            </a>
+            <nav class="public-nav">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a class="outline-button" href="{{ url_for('login') }}">Login</a>
+                <a class="gradient-button compact" href="{{ url_for('register') }}">Create account</a>
+            </nav>
+        </header>
+        <main class="public-content">
+            {% block public_content %}{% endblock %}
+        </main>
+    </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

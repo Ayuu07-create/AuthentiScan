@@ -1,0 +1,23 @@
+{% set force_public = true %}
+{% extends "base.html" %}
+{% block title %}Login · AuthentiScan{% endblock %}
+{% block public_content %}
+<section class="auth-layout">
+    <div class="auth-story">
+        <p class="eyebrow">Protected access</p>
+        <h1>Verify documents with <span>AI-powered confidence.</span></h1>
+        <p>Sign in to analyze supported documents, review visual-forensic signals, download reports and track your verification history.</p>
+        <div class="feature-chips"><span class="feature-chip">✓ Ten document categories</span><span class="feature-chip">✓ OCR verification</span><span class="feature-chip">✓ Forensic heatmaps</span></div>
+    </div>
+    <div class="auth-card">
+        <p class="eyebrow">Welcome back</p><h1>Login to AuthentiScan</h1><p>Use your registered account to continue.</p>
+        {% if error %}<div class="alert error"><span>!</span><span>{{ error }}</span></div>{% endif %}
+        <form class="account-form" method="POST" data-loading-form>
+            <div class="field-group"><label for="email">Email address</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div>
+            <div class="field-group"><label for="password">Password</label><div class="password-wrap"><input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required><button class="password-toggle" type="button" data-password-toggle="password">Show</button></div></div>
+            <button class="gradient-button" type="submit">Login securely <span>→</span></button>
+        </form>
+        <p class="account-switch">New to AuthentiScan? <a href="{{ url_for('register') }}">Create an account</a></p>
+    </div>
+</section>
+{% endblock %}

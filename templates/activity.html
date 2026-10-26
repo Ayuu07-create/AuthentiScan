@@ -1,0 +1,40 @@
+{% set active_page = "activity" %}
+{% extends "base.html" %}
+{% block title %}Activity Logs · AuthentiScan{% endblock %}
+{% block content %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">Account audit trail</p>
+        <h1>Activity Logs</h1>
+        <p>Recent login, analysis, reporting and signature activity for {{ session.get("user_name") }}.</p>
+    </div><a class="outline-button" href="{{ url_for('dashboard') }}">Dashboard</a>
+</header>
+<section class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">◷</span>
+            <h2>Recent Account Activity</h2>
+        </div><span class="status-pill neutral">Latest 100</span>
+    </div>{% if activity_logs %}<div class="data-table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Date and Time</th>
+                </tr>
+            </thead>
+            <tbody>{% for activity in activity_logs %}<tr>
+                    <td><span class="status-pill neutral">{{ activity.action }}</span></td>
+                    <td>{{ activity.details or "No details" }}</td>
+                    <td>{{ activity.created_at }}</td>
+                </tr>{% endfor %}</tbody>
+        </table>
+    </div>{% else %}<div class="empty-state">
+        <div>
+            <h3>No activity recorded</h3>
+            <p>Account and document activity will appear here.</p><a class="gradient-button"
+                href="{{ url_for('home') }}">Analyze Document</a>
+        </div>
+    </div>{% endif %}
+</section>
+{% endblock %}

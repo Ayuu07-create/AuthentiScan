@@ -1,0 +1,123 @@
+{% set active_page = "upload" %}
+{% extends "base.html" %}
+{% block title %}Analysis Result · AuthentiScan{% endblock %}
+{% block content %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">Verification complete</p>
+        <h1>Analysis Result</h1>
+        <p>Review the AI-assisted assessment for <strong>{{ filename }}</strong>.</p>
+    </div>{% if analysis_id %}<a class="gradient-button compact"
+        href="{{ url_for('download_report', analysis_id=analysis_id) }}">▤ Download PDF</a>{% endif %}
+</header>
+<section class="selected-type-bar">
+    <div><small>Selected document category</small><strong>{{ document_type }}</strong></div><span
+        class="status-pill neutral">{{ result.format }}</span>
+</section>
+<section class="result-summary">
+    <article class="panel verification-card">
+        <div class="panel-title"><span class="title-icon">✓</span>
+            <h2>Document-Type Verification</h2>
+        </div>
+        <div class="verification-banner {% if result.type_verified %}verified{% else %}rejected{% endif %}">{% if
+            result.type_verified %}✓ Document type verified{% else %}× Document type not verified{% endif %}</div>
+        <div class="detail-stack">
+            <p>{{ result.verification_message }}</p>
+            <p><strong>Keyword match:</strong> {{ result.match_percentage }}%</p>
+            <p><strong>Matched indicators:</strong> {% if result.matched_keywords %}{{ result.matched_keywords|join(",
+                ") }}{% else %}No category indicators detected{% endif %}</p>
+        </div>
+    </article>
+    <article class="panel quality-card">
+        <div class="panel-title"><span class="title-icon">◈</span>
+            <h2>Input Quality Assessment</h2>
+        </div>
+        <div class="verification-banner {% if result.quality_suitable %}verified{% else %}rejected{% endif %}">{% if
+            result.quality_suitable %}✓ Image quality suitable{% else %}× Image quality insufficient{% endif %}</div>
+        <div class="detail-stack">
+            <p><strong>Quality score:</strong> {{ result.quality_score }}%</p>
+            <p><strong>Image sharpness:</strong> {{ result.sharpness }}</p>{% if result.quality_issues %}<ul>{% for
+                issue in result.quality_issues %}<li>{{ issue }}</li>{% endfor %}</ul>{% else %}<p>No major
+                input-quality problems detected.</p>{% endif %}
+        </div>
+    </article>
+</section>
+{% if result.analysis_performed %}
+<section class="panel integrity-panel">
+    <div class="integrity-ring"
+        style="--score: {{ result.authenticity_score }}; --ring-color: {% if result.risk_level|lower == 'low' %}#19c76a{% elif result.risk_level|lower == 'medium' %}#f6a313{% else %}#ef334d{% endif %};">
+        <strong>{{ result.authenticity_score }}%</strong></div>
+    <h2>Visual Integrity Score</h2><span class="status-pill {{ result.risk_level|lower }}">{{ result.risk_level }}
+        Risk</span>
+    <p class="integrity-message">{{ result.result_message }}</p>
+    <div class="document-meta">
+        <p><strong>Document format:</strong> {{ result.format }}</p>
+        <p><strong>Dimensions:</strong> {{ result.width }} × {{ result.height }}</p>
+        <p><strong>Forensic risk score:</strong> {{ result.risk_score }}%</p>
+        <p><strong>Visual integrity score:</strong> {{ result.authenticity_score }}%</p>
+    </div>
+</section>
+<section class="panel signals-panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">▥</span>
+            <h2>Forensic Signal Breakdown</h2>
+        </div><span class="status-pill neutral">Combined evidence</span>
+    </div>
+    <div class="panel-body">
+        <div class="signal-grid">{% for signal in result.forensic_signals %}<article class="signal-card">
+                <div class="signal-heading"><strong>{{ signal.name }}</strong><span>{{ signal.score }}%</span></div>
+                <div class="signal-bar"><span style="--signal-score: {{ signal.score }}"></span></div>
+                <p>{{ signal.description }}</p>
+            </article>{% endfor %}</div>
+        <p class="notice-note">A high individual signal does not prove forgery. Interpret all indicators together and
+            manually verify suspicious documents.</p>
+    </div>
+</section>
+{% if result.suspicious_heatmap %}<section class="panel heatmap-panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">◉</span>
+            <h2>Suspicious-Region Heatmap</h2>
+        </div>
+    </div>
+    <div class="panel-body">
+        <p style="margin-top:0;color:var(--ink-500);text-align:center">Warmer colors indicate stronger local pixel
+            variations requiring manual inspection.</p><img class="heatmap-image" src="{{ result.suspicious_heatmap }}"
+            alt="Forensic suspicious-region heatmap">
+        <p class="notice-note">Text edges, seals, photographs and signatures naturally create strong responses.
+            Highlighted regions are not automatic proof of manipulation.</p>
+    </div>
+</section>{% endif %}
+{% else %}
+<section class="panel blocked-panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">!</span>
+            <h2>Forgery Analysis Not Performed</h2>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="alert error"><span>!</span><span>{{ result.result_message }}</span></div>{% if not
+        result.type_verified %}<p>Select the correct category and upload one of the ten supported document types.</p>{%
+        elif not result.quality_suitable %}<p>Upload a higher-resolution, focused and clearly aligned document.</p>{%
+        endif %}
+    </div>
+</section>
+{% endif %}
+<section class="panel ocr-panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">Aa</span>
+            <h2>Extracted OCR Text</h2>
+        </div>
+    </div>
+    <div class="panel-body">{% if result.extracted_text %}
+        <pre class="ocr-output">{{ result.extracted_text }}</pre>{% else %}<div class="alert info">
+            <span>i</span><span>No readable text was found. Upload a clearer and properly aligned document.</span></div>
+        {% endif %}
+    </div>
+</section>
+<div class="result-actions">{% if analysis_id %}<a class="gradient-button"
+        href="{{ url_for('download_report', analysis_id=analysis_id) }}">▤ Download PDF Report</a>{% endif %}<a
+        class="secondary-button" href="{{ url_for('home') }}">⇧ Analyze Another</a><a class="outline-button"
+        href="{{ url_for('history') }}">▥ View History</a></div>
+<p class="legal-note">This is an AI-assisted visual-forensics estimate. It is not legal proof of document authenticity.
+</p>
+{% endblock %}

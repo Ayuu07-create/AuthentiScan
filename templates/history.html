@@ -1,0 +1,54 @@
+{% set active_page = "history" %}
+{% extends "base.html" %}
+{% block title %}Analysis History · AuthentiScan{% endblock %}
+{% block content %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">Verification archive</p>
+        <h1>Analysis History</h1>
+        <p>Review previous document checks and download their reports.</p>
+    </div><a class="gradient-button compact" href="{{ url_for('home') }}">⇧ New Analysis</a>
+</header>
+<section class="panel">
+    <div class="panel-header">
+        <div class="panel-title"><span class="title-icon">▥</span>
+            <h2>All Analyses</h2>
+        </div><span class="status-pill neutral">{{ analyses|length }} records</span>
+    </div>{% if analyses %}<div class="data-table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Selected Type</th>
+                    <th>Type Status</th>
+                    <th>Integrity</th>
+                    <th>Risk</th>
+                    <th>Date</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+            <tbody>{% for analysis in analyses %}<tr>
+                    <td class="file-cell" title="{{ analysis.original_filename }}">{{ analysis.original_filename }}</td>
+                    <td>{{ analysis.document_type }}</td>
+                    <td>{% if analysis.document_verified %}<span class="status-pill verified">✓ Verified</span>{% else
+                        %}<span class="status-pill rejected">× Rejected</span>{% endif %}</td>
+                    <td>{% if analysis.authenticity_score is not none %}{{ analysis.authenticity_score }}%{% else %}Not
+                        analyzed{% endif %}</td>
+                    <td><span class="status-pill {{ analysis.risk_level|lower }}">{{ analysis.risk_level }}</span></td>
+                    <td>{{ analysis.created_at }}</td>
+                    <td><a class="table-button"
+                            href="{{ url_for('download_report', analysis_id=analysis.id) }}">Download</a></td>
+                </tr>{% endfor %}</tbody>
+        </table>
+    </div>{% else %}<div class="empty-state">
+        <div>
+            <div class="empty-illustration">
+                <div class="clipboard"><span></span><span></span><span></span></div>
+            </div>
+            <h3>No analysis history</h3>
+            <p>Upload a document to create your first history record.</p><a class="gradient-button"
+                href="{{ url_for('home') }}">Upload Document</a>
+        </div>
+    </div>{% endif %}
+</section>
+{% endblock %}

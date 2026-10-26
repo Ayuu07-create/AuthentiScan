@@ -1,0 +1,141 @@
+{% set active_page = "dashboard" %}
+{% extends "base.html" %}
+{% block title %}Dashboard · AuthentiScan{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>{% endblock %}
+{% block content %}
+{% set risk = namespace(low=0, medium=0, high=0) %}
+{% for label in risk_labels %}{% if label|lower == 'low' %}{% set risk.low = risk_values[loop.index0] %}{% elif
+label|lower == 'medium' %}{% set risk.medium = risk_values[loop.index0] %}{% elif label|lower == 'high' %}{% set
+risk.high = risk_values[loop.index0] %}{% endif %}{% endfor %}
+<header class="page-heading">
+    <div>
+        <p class="eyebrow">Verification center</p>
+        <h1>Dashboard</h1>
+        <p>Monitor document checks, risk distribution and recent verification activity.</p>
+    </div><a class="gradient-button compact" href="{{ url_for('home') }}">⇧ Upload Document</a>
+</header>
+<section class="metric-grid">
+    <article class="metric-card blue">
+        <div class="metric-top"><span class="metric-icon">▣</span><strong class="metric-value">{{ summary.total_analyses
+                or 0 }}</strong></div>
+        <p class="metric-label">Total Documents</p>
+        <p class="metric-help">All analyzed documents</p>
+    </article>
+    <article class="metric-card green">
+        <div class="metric-top"><span class="metric-icon">✓</span><strong class="metric-value">{{
+                summary.verified_documents or 0 }}</strong></div>
+        <p class="metric-label">Type Verified</p>
+        <p class="metric-help">Matched selected categories</p>
+    </article>
+    <article class="metric-card amber">
+        <div class="metric-top"><span class="metric-icon">!</span><strong class="metric-value">{{ risk.medium
+                }}</strong></div>
+        <p class="metric-label">Needs Review</p>
+        <p class="metric-help">Medium-risk assessments</p>
+    </article>
+    <article class="metric-card red">
+        <div class="metric-top"><span class="metric-icon">×</span><strong class="metric-value">{{ risk.high }}</strong>
+        </div>
+        <p class="metric-label">High Risk</p>
+        <p class="metric-help">Strong suspicious indicators</p>
+    </article>
+    <article class="metric-card purple">
+        <div class="metric-top"><span class="metric-icon">◉</span><strong class="metric-value">{% if
+                summary.average_integrity is not none %}{{ summary.average_integrity }}%{% else %}—{% endif %}</strong>
+        </div>
+        <p class="metric-label">Average Integrity</p>
+        <p class="metric-help">Across analyzed documents</p>
+    </article>
+</section>
+<section class="dashboard-grid">
+    <article class="panel">
+        <div class="panel-header">
+            <div class="panel-title"><span class="title-icon">◷</span>
+                <h2>Recent Activity</h2>
+            </div><a class="outline-button" href="{{ url_for('history') }}">View All</a>
+        </div>{% if recent_analyses %}<div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Integrity</th>
+                        <th>Risk</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+                <tbody>{% for analysis in recent_analyses %}<tr>
+                        <td class="file-cell" title="{{ analysis.original_filename }}">{{ analysis.original_filename }}
+                        </td>
+                        <td>{{ analysis.document_type }}</td>
+                        <td>{% if analysis.document_verified %}<span class="status-pill verified">✓ Verified</span>{%
+                            else %}<span class="status-pill rejected">× Rejected</span>{% endif %}</td>
+                        <td>{% if analysis.authenticity_score is not none %}{{ analysis.authenticity_score }}%{% else
+                            %}—{% endif %}</td>
+                        <td><span class="status-pill {{ analysis.risk_level|lower }}">{{ analysis.risk_level }}</span>
+                        </td>
+                        <td><a class="table-button"
+                                href="{{ url_for('download_report', analysis_id=analysis.id) }}">Download</a></td>
+                    </tr>{% endfor %}</tbody>
+            </table>
+        </div>{% else %}<div class="empty-state">
+            <div>
+                <div class="empty-illustration">
+                    <div class="clipboard"><span></span><span></span><span></span></div>
+                </div>
+                <h3>No recent activity found</h3>
+                <p>Upload a document to start verification.</p><a class="gradient-button" href="{{ url_for('home') }}">⇧
+                    Upload Document</a>
+            </div>
+        </div>{% endif %}
+    </article>
+    <article class="panel">
+        <div class="panel-header">
+            <div class="panel-title"><span class="title-icon">◔</span>
+                <h2>Verification Overview</h2>
+            </div><span class="status-pill neutral">All time</span>
+        </div>
+        <div class="panel-body">{% if risk_values %}<div class="chart-stage"><canvas id="riskChart"
+                    aria-label="Risk distribution chart"></canvas></div>{% else %}<div class="empty-state">
+                <div>
+                    <h3>No verification data</h3>
+                    <p>Your risk overview will appear after the first analysis.</p>
+                </div>
+            </div>{% endif %}</div>
+    </article>
+    <article class="panel recent-panel">
+        <div class="panel-header">
+            <div class="panel-title"><span class="title-icon">▥</span>
+                <h2>Documents by Category</h2>
+            </div>
+        </div>
+        <div class="panel-body">{% if type_values %}<div class="chart-stage"><canvas id="typeChart"
+                    aria-label="Document category chart"></canvas></div>{% else %}<div class="empty-state">
+                <div>
+                    <h3>No category data</h3>
+                    <p>Analyzed document categories will be summarized here.</p>
+                </div>
+            </div>{% endif %}</div>
+    </article>
+</section>
+<section class="hero-banner">
+    <div class="hero-document"></div>
+    <div class="hero-copy">
+        <h2>Ensure document authenticity with AI</h2>
+        <p>Review every score as decision support. High-confidence automated signals should still be validated against
+            the source document.</p>
+    </div>
+</section>
+<script id="dashboard-data"
+    type="application/json">{{ {"riskLabels":risk_labels,"riskValues":risk_values,"typeLabels":type_labels,"typeValues":type_values}|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script>
+    const data = JSON.parse(document.getElementById('dashboard-data').textContent);
+    const common = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18, font: { family: 'Inter, system-ui' } } } } };
+    if (document.getElementById('riskChart') && data.riskValues.length && typeof Chart !== 'undefined') { new Chart(document.getElementById('riskChart'), { type: 'doughnut', data: { labels: data.riskLabels, datasets: [{ data: data.riskValues, backgroundColor: ['#19c76a', '#f6a313', '#ef334d', '#842cf2', '#1477ef'], borderColor: '#fff', borderWidth: 4, hoverOffset: 7 }] }, options: { ...common, cutout: '66%' } }) }
+    if (document.getElementById('typeChart') && data.typeValues.length && typeof Chart !== 'undefined') { new Chart(document.getElementById('typeChart'), { type: 'bar', data: { labels: data.typeLabels, datasets: [{ label: 'Documents', data: data.typeValues, backgroundColor: ['#7c2cff', '#ef227f', '#ff8a13', '#1477ef', '#19c76a'], borderRadius: 8 }] }, options: { ...common, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eef0f7' } }, x: { grid: { display: false } } } } }) }
+</script>
+{% endblock %}
