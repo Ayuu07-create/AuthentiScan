@@ -2,7 +2,7 @@
 
 AuthentiScan is an AI-powered web application designed to identify potential forgery in digital documents using deep learning and document analysis techniques. Built with Python and Flask, the system provides a user-friendly interface for uploading and analyzing documents across different categories.
 
-## 🚀 Features
+# 🚀 Features
 
 - **AI-Based Forgery Detection:** Analyzes documents to identify potential signs of forgery.
 - **Multiple Document Categories:** Supports PAN cards, Aadhaar cards, marksheets, educational certificates, college IDs, birth certificates, income certificates, experience certificates, medical certificates, and domicile certificates.
@@ -12,7 +12,7 @@ AuthentiScan is an AI-powered web application designed to identify potential for
 - **User-Friendly Interface:** Provides a simple web interface built using Flask templates and static assets.
 - **Signature Analysis:** Includes a dedicated signature analysis module.
 
-## 🛠️ Technologies Used
+# 🛠️ Technologies Used
 
 - Python
 - Flask
@@ -21,7 +21,7 @@ AuthentiScan is an AI-powered web application designed to identify potential for
 - Machine Learning and Deep Learning
 - SQLite or the database configured in the project
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```text
 AuthentiScan/
@@ -39,22 +39,22 @@ AuthentiScan/
 └── README.md
 ```
 
-## ⚙️ Installation and Setup
+# ⚙️ Installation and Setup
 
-### 1. Clone the Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Ayuu07-create/AuthentiScan.git
 cd AuthentiScan
 ```
 
-### 2. Create a Virtual Environment
+## 2. Create a Virtual Environment
 
 ```bash
 python -m venv .venv
 ```
 
-### 3. Activate the Virtual Environment
+## 3. Activate the Virtual Environment
 
 **Windows:**
 
@@ -62,13 +62,13 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 4. Install Dependencies
+## 4. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Run the Application
+## 5. Run the Application
 
 ```bash
 python app.py
@@ -76,7 +76,7 @@ python app.py
 
 Open the local URL displayed in your terminal, usually `http://127.0.0.1:5000/`.
 
-## 🔍 How It Works
+# 🔍 How It Works
 
 1. Open the AuthentiScan web application.
 2. Select the appropriate document category.
@@ -84,16 +84,30 @@ Open the local URL displayed in your terminal, usually `http://127.0.0.1:5000/`.
 4. Allow the system to process the uploaded document.
 5. Review the analysis result and generated report, if available.
 
-## 🎯 Project Objective
+# 🎯 Project Objective
 
 The objective of AuthentiScan is to explore how artificial intelligence and document analysis can help identify potentially forged digital documents. 
 It aims to provide a convenient initial screening tool for documents across multiple categories.
 
-## ⚠️ Disclaimer
+# ⚠️ Disclaimer
 AuthentiScan is an academic project intended for educational and research purposes. Its results are not a guarantee of document authenticity and should not be treated as official verification.
 Important documents should be verified through the relevant issuing authority.
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 Ayuu07-create
 GitHub: https://github.com/Ayuu07-create
+
+# 📸 Application Screenshots
+
+## 1. Login Page
+![](Screenshots/login.png)
+
+## 2. Dashboard
+![](Screenshots/dashboard.png)
+
+## 3. Document Upload Page
+![](Screenshots/upload.png)
+
+## 4. Forgery Detection Result
+![](Screenshots/result.png)
